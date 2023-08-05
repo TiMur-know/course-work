@@ -1,5 +1,6 @@
 'use client'
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Container, Button, Collapse, Table, Form } from 'react-bootstrap';
 
 const Users = () => {
@@ -9,16 +10,31 @@ const Users = () => {
     { id: 3, username: 'user3', email: 'user3@example.com', password: 'password3', role: 'BEAUTICIAN' },
   ];
 
-  const workers = [
+  const initialWorkers = [
     { id: 1, userId: 1, firstname: 'John', lastname: 'Doe', phone: '1234567890', age: 30, email: 'john@example.com' },
     { id: 2, userId: 2, firstname: 'Jane', lastname: 'Doe', phone: '9876543210', age: 25, email: 'jane@example.com' },
     { id: 3, userId: 3, firstname: 'Bob', lastname: 'Smith', phone: '5555555555', age: 35, email: 'bob@example.com' },
   ];
-
+  
   const [users, setUsers] = useState(initialUsers);
+  const [workers, setWorkers] = useState(initialWorkers);
   const [expandedWorkerId, setExpandedWorkerId] = useState(null);
   const [isDataChanged, setIsDataChanged] = useState(false);
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const usersResponse = await axios.get('http://localhost:3001/api/users');
+        setUsers(usersResponse.data);
 
+        const workersResponse = await axios.get('http://localhost:3001/api/workers');
+        setWorkers(workersResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  },[])
   const handleToggle = (workerId) => {
     if (expandedWorkerId === workerId) {
       setExpandedWorkerId(null);
@@ -44,20 +60,30 @@ const Users = () => {
     );
   };
 
-  const handleSaveChanges = () => {
-    // Save changes here
-    setIsDataChanged(false);
+  const handleSaveChanges = async() => {
+    try {
+      // Сохранение изменений пользователей
+      await axios.put('http://localhost:3001/api/users', users);
+      // Сохранение изменений работников
+      await axios.put('http://localhost:3001/api/workers', workers);
+  
+      // Сброс флага изменений
+      setIsDataChanged(false);
+    } catch (error) {
+      console.error('Error saving changes:', error);
+    }
   };
 
   return (
     <Container>
+      <h1 style={{color:'#05a9e5'}}>Користувачі</h1>
       <Table striped bordered>
         <thead>
           <tr>
-            <th>Логин</th>
+            <th>Логін</th>
             <th>Email</th>
             <th>Роль</th>
-            <th>Действия</th>
+            <th>Дії</th>
           </tr>
         </thead>
         <tbody>
@@ -68,10 +94,10 @@ const Users = () => {
                 <td>{user.email}</td>
                 <td>
                   <Form.Select value={user.role} onChange={(event) => handleChangeRole(user.id, event)}>
-                    <option value="USER">Пользователь</option>
+                    <option value="USER">Користувач</option>
                     <option value="HAIRDRESSER">Парикмахер</option>
                     <option value="BEAUTICIAN">Косметолог</option>
-                    <option value="ADMIN">Администратор</option>
+                    <option value="ADMIN">Адміністратор</option>
                   </Form.Select>
                 </td>
                 <td>
@@ -81,10 +107,10 @@ const Users = () => {
                     aria-controls={`worker-info-${user.id}`}
                     aria-expanded={expandedWorkerId === user.id}
                   >
-                    Подробно
+                    Детально
                   </Button>
                   <Button variant="danger" onClick={() => handleDeleteUser(user.id)}>
-                    Удалить
+                    Видалити
                   </Button>
                 </td>
               </tr>
@@ -95,9 +121,9 @@ const Users = () => {
                       <Table striped bordered>
                         <thead>
                           <tr>
-                            <th>Фамилия</th>
-                            <th>Имя</th> 
-                            <th>Номер телефона</th>
+                            <th>Прізвище</th>
+                            <th>Імя</th> 
+                            <th>Номер телефону</th>
                             <th>Возраст</th>
                           </tr>
                         </thead>
@@ -123,13 +149,13 @@ const Users = () => {
         </tbody>
       </Table>
       {!isDataChanged && (
-        <Button variant="primary" disabled onClick={handleSaveChanges}>
-          Сохранить
+        <Button variant="info" disabled onClick={handleSaveChanges}>
+          Зберегти
         </Button>
       )}
       {isDataChanged && (
-        <Button variant="primary" onClick={handleSaveChanges}>
-          Сохранить
+        <Button variant="info" onClick={handleSaveChanges}>
+          Зберегти
         </Button>
       )}
     </Container>

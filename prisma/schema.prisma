@@ -1,0 +1,109 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  email    String   @unique
+  password String
+  role     String
+  workers  Worker[]
+}
+
+model Worker {
+  id        Int     @id @default(autoincrement())
+  user_id   Int?
+  firstname String
+  lastname  String
+  phone     String
+  age       Int
+  email     String?
+  user      User?   @relation(fields: [user_id], references: [id])
+}
+
+model Client {
+  id                  Int                   @id @default(autoincrement())
+  firstname           String
+  lastname            String
+  phone               String
+  age                 Int
+  email               String?
+  CosmetologyReceipt  CosmetologyReceipt[]
+  HairdressingReceipt HairdressingReceipt[]
+}
+
+model CosmetologyService {
+  id          Int                  @id @default(autoincrement())
+  name        String
+  description String
+  photo       String?
+  price       Float
+  show  Boolean
+  receipts    CosmetologyReceipt[]
+}
+
+model HairdressingService {
+  id          Int                   @id @default(autoincrement())
+  name        String
+  price       Float
+  description String
+  photo       String?
+  gender      String
+  show  Boolean
+  receipts    HairdressingReceipt[]
+}
+
+model CosmetologyReceipt {
+  id                          Int                           @id @default(autoincrement())
+  cosmetology_id              Int
+  date_time                   String
+  total_cost                  Float
+  client_id                   Int
+  cosmetologyService          CosmetologyService            @relation(fields: [cosmetology_id], references: [id])
+  client                      Client                        @relation(fields: [client_id], references: [id])
+  Registr_Cosmetology_Receipt Registr_Cosmetology_Receipt[]
+}
+
+model HairdressingReceipt {
+  id                           Int                            @id @default(autoincrement())
+  hairdressing_id              Int
+  date_time                    String
+  total_cost                   Float
+  client_id                    Int
+  hairdressingService          HairdressingService            @relation(fields: [hairdressing_id], references: [id])
+  client                       Client                         @relation(fields: [client_id], references: [id])
+  Registr_Hairdressing_Receipt Registr_Hairdressing_Receipt[]
+}
+
+model Registr_Hairdressing_Receipt {
+  id                      Int                 @id @default(autoincrement())
+  registr_id              Int
+  hairdressing_receipt_id Int
+  registr                 Registr             @relation(fields: [registr_id], references: [id])
+  hairdressingReceipt     HairdressingReceipt @relation(fields: [hairdressing_receipt_id], references: [id])
+}
+
+model Registr_Cosmetology_Receipt {
+  id                     Int                @id @default(autoincrement())
+  registr_id             Int
+  cosmetology_receipt_id Int
+  registr                Registr            @relation(fields: [registr_id], references: [id])
+  cosmetologyReceipt     CosmetologyReceipt @relation(fields: [cosmetology_receipt_id], references: [id])
+}
+
+model Registr {
+  id                   Int                            @id @default(autoincrement())
+  date_start           String
+  date_end             String
+  total_cost           Float
+  cosmetologyReceipts  Registr_Cosmetology_Receipt[]
+  hairdressingReceipts Registr_Hairdressing_Receipt[]
+}
