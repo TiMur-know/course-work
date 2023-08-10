@@ -1,8 +1,9 @@
 'use client'
-
+import { useRouter } from "next/navigation";
 import React, { useState,useContext } from "react";
 import { UserContext } from "../../userContext";
 const Authorize = () => {
+  const router = useRouter();
   const {checkUser,loginUser}=useContext(UserContext)
   const [formData, setFormData] = useState({
     username: "",
@@ -27,13 +28,13 @@ const Authorize = () => {
         if (isUserValid) {
           await loginUser(formData.username, formData.password)
           console.log("User is authorized!");
-          // Здесь вы можете перенаправить пользователя на другую страницу или выполнить другие действия при успешной авторизации.
+          router.push('/')
         } else {
           console.log("User is not authorized.");
-          // Здесь вы можете показать сообщение об ошибке входа или выполнить другие действия при неуспешной авторизации.
+      
         }
       }catch(error){
-        
+        console.error("Error authorizing user:", error);
       }
     }
   }
@@ -53,7 +54,7 @@ const Authorize = () => {
   return (
     <div className="card my-5 ">
       <h1 className="text-center mb-5 my-5">Вхід</h1>
-      <form className="card-body cardbody-color p-lg-5">
+      <form className="card-body cardbody-color p-lg-5" onSubmit={handleSubmit}>
 
         <div className="text-center">
 
