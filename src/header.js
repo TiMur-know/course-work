@@ -1,11 +1,13 @@
 "use client"
 import Link from "next/link";
+import React,{ useContext } from "react";
 import { Image } from "react-bootstrap";
-export default function Header() {
-  const user = { id: 1, username: 'user1', email: 'user1@example.com', password: 'password1', role: 'ADMIN' };
+import { UserContext } from "./userContext";
 
+export default function Header() {
+  const {logoutUser,user}=useContext(UserContext);
   const logOut=()=>{
-    
+    logoutUser()
   }
   return (
     <header className=" d-flex flex-wrap justify-content-center justify-content-md-between py-3 mb-4 border-bottom">

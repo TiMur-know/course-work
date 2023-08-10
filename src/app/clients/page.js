@@ -1,8 +1,8 @@
 'use client'
 import axios from "axios";
 import { useEffect,useState } from "react";
-
-export default function Clients() {
+import withAuthorization  from '../../authControl'
+const Clients=()=> {
   const initialClients = [
     { id: 1, firstname: 'John', lastname: 'Doe', phone: '1234567890', age: 30, email: 'john@example.com' },
     { id: 2, firstname: 'Jane', lastname: 'Smith', phone: '9876543210', age: 25, email: 'jane@example.com' },
@@ -51,4 +51,5 @@ export default function Clients() {
     </div>
     )
   }
-  
+
+export default withAuthorization(['ADMIN','HAIRDRESSER','BEAUTICIAN'])(Clients);

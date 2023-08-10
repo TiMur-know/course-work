@@ -1,9 +1,9 @@
 'use client'
 
-import { checkUser } from "@/functions";
-import React, { useState } from "react";
-
+import React, { useState,useContext } from "react";
+import { UserContext } from "../../userContext";
 const Authorize = () => {
+  const {checkUser,loginUser}=useContext(UserContext)
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -25,7 +25,7 @@ const Authorize = () => {
       try{
         const isUserValid = await checkUser(formData.username, formData.password);
         if (isUserValid) {
-
+          await loginUser(formData.username, formData.password)
           console.log("User is authorized!");
           // Здесь вы можете перенаправить пользователя на другую страницу или выполнить другие действия при успешной авторизации.
         } else {

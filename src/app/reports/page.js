@@ -2,25 +2,96 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal, Table } from 'react-bootstrap';
-
+import withAuthorization  from '../../authControl'
 const Reports = () => {
-  
-
-
-
+  const formatDateTime=(dateTimeString)=> {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    const dateTime = new Date(dateTimeString);
+    return dateTime.toLocaleDateString('uk-UA', options);
+  }
+  const formatDate=(dateTimeString)=> {
+    const options = { year: 'numeric', month: 'numeric', day: 'numeric'};
+    const dateTime = new Date(dateTimeString);
+    return dateTime.toLocaleDateString('uk-UA', options);
+  }
     const initialRegistrs = [
         {
           id: 1,
           date_start: '2023-07-01',
           date_end: '2023-07-05',
           total_cost: 150,
-          hairdressingReceipts: [
-            { id: 1, hairdressing_id: 1 },
-            { id: 2, hairdressing_id: 2 },
+          CosmetologyReceipts: [
+            {
+              id: 1,
+              date_time: "2023-08-01T07:00:00.000Z",
+              total_cost: 50,
+              createdAt: "2023-08-09T09:19:15.096Z",
+              updatedAt: "2023-08-09T09:19:15.096Z",
+              CosmetologyServiceId: 2,
+              ClientId: 2,
+              CosmetologyReceipts_Registr: {
+                id: 1,
+                createdAt: "2023-08-09T09:19:15.115Z",
+                updatedAt: "2023-08-09T09:19:15.115Z",
+                CosmetologyReceiptId: 1,
+                RegistrId: 1
+              },
+              Client: {
+                firstname: "FirstName2",
+                lastname: "Lastname2"
+              },
+              CosmetologyService: {
+                name: "Service2"
+              }
+            },
+            {
+              id: 2,
+              date_time: "2023-08-02T12:30:00.000Z",
+              total_cost: 75,
+              createdAt: "2023-08-09T09:19:15.096Z",
+              updatedAt: "2023-08-09T09:19:15.096Z",
+              CosmetologyServiceId: 1,
+              ClientId: 2,
+              CosmetologyReceipts_Registr: {
+                id: 2,
+                createdAt: "2023-08-09T09:19:15.115Z",
+                updatedAt: "2023-08-09T09:19:15.115Z",
+                CosmetologyReceiptId: 2,
+                RegistrId: 1
+              },
+              Client: {
+                firstname: "FirstName2",
+                lastname: "Lastname2"
+              },
+              CosmetologyService: {
+                name: "Service1"
+              }
+            }
           ],
-          cosmetologyReceipts: [
-            { id: 1, cosmetology_id: 1 },
-            { id: 2, cosmetology_id: 2 },
+          HairdressingReceipts: [
+            {
+              id: 1,
+              date_time: "2023-08-03T11:00:00.000Z",
+              total_cost: 40,
+              createdAt: "2023-08-09T09:19:15.101Z",
+              updatedAt: "2023-08-09T09:19:15.101Z",
+              HairdressingServiceId: 1,
+              ClientId: 2,
+              HairdressingReceipts_Registr: {
+                id: 1,
+                createdAt: "2023-08-09T09:19:15.111Z",
+                updatedAt: "2023-08-09T09:19:15.111Z",
+                HairdressingReceiptId: 1,
+                RegistrId: 1
+              },
+              Client: {
+                firstname: "FirstName2",
+                lastname: "Lastname2"
+              },
+              HairdressingService: {
+                name: "Service3"
+              }
+            }
           ],
         },
         {
@@ -28,23 +99,148 @@ const Reports = () => {
           date_start: '2023-07-03',
           date_end: '2023-07-08',
           total_cost: 200,
-          hairdressingReceipts: [
-            { id: 3, hairdressing_id: 1 },
-            { id: 4, hairdressing_id: 2 },
+          CosmetologyReceipts: [
+            {
+              id: 1,
+              date_time: "2023-08-01T07:00:00.000Z",
+              total_cost: 50,
+              createdAt: "2023-08-09T09:19:15.096Z",
+              updatedAt: "2023-08-09T09:19:15.096Z",
+              CosmetologyServiceId: 2,
+              ClientId: 2,
+              CosmetologyReceipts_Registr: {
+                id: 1,
+                createdAt: "2023-08-09T09:19:15.115Z",
+                updatedAt: "2023-08-09T09:19:15.115Z",
+                CosmetologyReceiptId: 1,
+                RegistrId: 1
+              },
+              Client: {
+                firstname: "FirstName2",
+                lastname: "Lastname2"
+              },
+              CosmetologyService: {
+                name: "Service2"
+              }
+            },
+            {
+              id: 2,
+              date_time: "2023-08-02T12:30:00.000Z",
+              total_cost: 75,
+              createdAt: "2023-08-09T09:19:15.096Z",
+              updatedAt: "2023-08-09T09:19:15.096Z",
+              CosmetologyServiceId: 1,
+              ClientId: 2,
+              CosmetologyReceipts_Registr: {
+                id: 2,
+                createdAt: "2023-08-09T09:19:15.115Z",
+                updatedAt: "2023-08-09T09:19:15.115Z",
+                CosmetologyReceiptId: 2,
+                RegistrId: 1
+              },
+              Client: {
+                firstname: "FirstName2",
+                lastname: "Lastname2"
+              },
+              CosmetologyService: {
+                name: "Service1"
+              }
+            }
           ],
-          cosmetologyReceipts: [
-            { id: 3, cosmetology_id: 1 },
-            { id: 4, cosmetology_id: 2 },
+          HairdressingReceipts: [
+            {
+              id: 1,
+              date_time: "2023-08-03T11:00:00.000Z",
+              total_cost: 40,
+              createdAt: "2023-08-09T09:19:15.101Z",
+              updatedAt: "2023-08-09T09:19:15.101Z",
+              HairdressingServiceId: 1,
+              ClientId: 2,
+              HairdressingReceipts_Registr: {
+                id: 1,
+                createdAt: "2023-08-09T09:19:15.111Z",
+                updatedAt: "2023-08-09T09:19:15.111Z",
+                HairdressingReceiptId: 1,
+                RegistrId: 1
+              },
+              Client: {
+                firstname: "FirstName2",
+                lastname: "Lastname2"
+              },
+              HairdressingService: {
+                name: "Service3"
+              }
+            }
           ],
         },
       ];
     const initialCosmetologyReceipts = [
-        { id: 1, cosmetology_id: 1, date_time: '2023-07-01 10:00', total_cost: 50, client_id: 1 },
-        { id: 2, cosmetology_id: 2, date_time: '2023-07-02 15:30', total_cost: 25, client_id: 2 },
+      {
+        id: 1,
+        date_time: "2023-08-01T07:00:00.000Z",
+        total_cost: 50,
+        createdAt: "2023-08-09T10:10:00.705Z",
+        updatedAt: "2023-08-09T10:10:00.705Z",
+        CosmetologyServiceId: 2,
+        ClientId: 2,
+        Client: {
+          firstname: "FirstName2",
+          lastname: "Lastname2"
+        },
+        CosmetologyService: {
+          name: "Service2"
+        }
+      },
+      {
+        id: 2,
+        date_time: "2023-08-02T12:30:00.000Z",
+        total_cost: 75,
+        createdAt: "2023-08-09T10:10:00.705Z",
+        updatedAt: "2023-08-09T10:10:00.705Z",
+        CosmetologyServiceId: 1,
+        ClientId: 2,
+        Client: {
+          firstname: "FirstName2",
+          lastname: "Lastname2"
+        },
+        CosmetologyService: {
+          name: "Service1"
+        }
+      }
       ];   
       const initialHairdressingReceipts = [
-        { id: 1, hairdressing_id: 1, date_time: '2023-07-01 13:30', total_cost: 35, client_id: 1 },
-        { id: 2, hairdressing_id: 2, date_time: '2023-07-03 11:00', total_cost: 60, client_id: 2 },
+        {
+          id: 1,
+          date_time: "2023-08-03T11:00:00.000Z",
+          total_cost: 40,
+          createdAt: "2023-08-09T10:10:00.709Z",
+          updatedAt: "2023-08-09T10:10:00.709Z",
+          HairdressingServiceId: 1,
+          ClientId: 2,
+          Client: {
+            firstname: "FirstName2",
+            lastname: "Lastname2"
+          },
+          HairdressingService: {
+            name: "Service3"
+          }
+        },
+        {
+          id: 2,
+          date_time: "2023-08-04T08:45:00.000Z",
+          total_cost: 60,
+          createdAt: "2023-08-09T10:10:00.709Z",
+          updatedAt: "2023-08-09T10:10:00.709Z",
+          HairdressingServiceId: 1,
+          ClientId: 1,
+          Client: {
+            firstname: "FirstName1",
+            lastname: "Lastname1"
+          },
+          HairdressingService: {
+            name: "Service3"
+          }
+        }
       ];
       const initialCosmetologyServices = [
         { id: 1, name: 'Facial Treatment' },
@@ -54,21 +250,22 @@ const Reports = () => {
         { id: 1, name: 'Haircut' },
         { id: 2, name: 'Hair Coloring' },
       ];
-      const initialClients = [
-        { id: 1, firstname: 'John', lastname: 'Doe' },
-        { id: 2, firstname: 'Jane', lastname: 'Smith' },
-      ];
+
       
       const [registrs, setRegistrs] = useState(initialRegistrs);
       const [cosmetologyReceipts, setCosmetologyReceipts] = useState(initialCosmetologyReceipts);
       const [hairdressingReceipts, setHairdressingReceipts] = useState(initialHairdressingReceipts);
       const [cosmetologyServices, setCosmetologyServices] = useState(initialCosmetologyServices);
       const [hairdressingServices, setHairdressingServices] = useState(initialHairdressingServices);
-      const [clients, setClients] = useState(initialClients);
       const [showModal, setShowModal] = useState(false);
       const [newReportDate, setNewReportDate] = useState('');
-
+      
+      const [selectedStartDate, setSelectedStartDate] = useState('');
+      const [selectedEndDate, setSelectedEndDate] = useState('');
+      const [selectedHairdressingReceipts, setSelectedHairdressingReceipts] = useState([]);
+      const [selectedCosmetologyReceipts, setSelectedCosmetologyReceipts] = useState([]);
       const [hiddenReceipts, setHiddenReceipts] = useState([]);
+      const [selectingReceipts, setSelectingReceipts] = useState(false);
       const isReceiptHidden = (receiptId) => {
         return hiddenReceipts.includes(receiptId);
       };
@@ -81,6 +278,11 @@ const Reports = () => {
           }
         });
       };
+      const handleSelectingReceiptsChange = () => {
+        setSelectingReceipts(!selectingReceipts);
+        setSelectedHairdressingReceipts([]);
+        setSelectedCosmetologyReceipts([]);
+      };
       const getCosmetologyServiceName = (cosmetologyId) => {
         const service = cosmetologyServices.find((service) => service.id === cosmetologyId);
         return service ? service.name : '';
@@ -90,52 +292,102 @@ const Reports = () => {
         const service = hairdressingServices.find((service) => service.id === hairdressingId);
         return service ? service.name : '';
       };
+      const handleStartDateChange = (event) => {
+        setSelectedStartDate(event.target.value);
+      };
     
+      const handleEndDateChange = (event) => {
+        setSelectedEndDate(event.target.value);
+      };
+    
+      const handleHairdressingReceiptChange = (event, receiptId) => {
+        if (event.target.checked) {
+          setSelectedHairdressingReceipts((prevSelectedReceipts) => [...prevSelectedReceipts, receiptId]);
+        } else {
+          setSelectedHairdressingReceipts((prevSelectedReceipts) => prevSelectedReceipts.filter((id) => id !== receiptId));
+        }
+      };
+    
+      const handleCosmetologyReceiptChange = (event, receiptId) => {
+        if (event.target.checked) {
+          setSelectedCosmetologyReceipts((prevSelectedReceipts) => [...prevSelectedReceipts, receiptId]);
+        } else {
+          setSelectedCosmetologyReceipts((prevSelectedReceipts) => prevSelectedReceipts.filter((id) => id !== receiptId));
+        }
+      };
       
     
-      const handleAddReport = () => {
+      const handleAddReport = async() => {
         // Обработчик добавления отчета
         // Можно отправить новый отчет на сервер или обновить состояние в компоненте
         // В данном примере, новый отчет просто выводится в консоль
-        console.log('New report date:', newReportDate);
-    
-        // Сброс формы и закрытие модального окна
-        setNewReportDate('');
-        setShowModal(false);
+        const newReport = {
+          dateStart: newReportDateStart,
+          dateEnd: newReportDateEnd,
+          hairdressingReceipts: selectedHairdressingReceipts,
+          cosmetologyReceipts: selectedCosmetologyReceipts,
+        };
+        try {
+          // Отправить новый отчет на сервер
+          const response = await axios.post('http://localhost:3001/api/registr', newReport);
+          console.log('New report created:', response.data);
+      
+          // Сброс формы и закрытие модального окна
+          setNewReportDateStart('');
+          setNewReportDateEnd('');
+          setSelectedHairdressingReceipts([]);
+          setSelectedCosmetologyReceipts([]);
+          setShowModal(false);
+        } catch (error) {
+          console.error('Error creating report:', error);
+        }
       };
       useEffect(()=>{
         async function fetchData(){
           try {
-            const responseRegistrs = await axios.get('http://localhost:3001/api/registrs');
-            setRegistrs(responseRegistrs.data);
-
-            const responseCosmetologyReceipts = await axios.get('http://localhost:3001/api/cosmetologyReceipts');
-            setCosmetologyReceipts(responseCosmetologyReceipts.data);
-
-            const responseHairdressingReceipts = await axios.get('http://localhost:3001/api/hairdressingReceipts');
-            setHairdressingReceipts(responseHairdressingReceipts.data);
-
-            const responseCosmetologyServices = await axios.get('http://localhost:3001/api/cosmetologyServices');
-            setCosmetologyServices(responseCosmetologyServices.data);
-
-            const responseHairdressingServices = await axios.get('http://localhost:3001/api/hairdressingServices');
-            setHairdressingServices(responseHairdressingServices.data);
-
-            const responseClients = await axios.get('http://localhost:3001/api/clients');
-            setClients(responseClients.data);
+            const response  =await axios.get('http://localhost:3001/api/registrs');
+            const data = response.data;
+            setRegistrs(data)
+            const responseReceipts  =await axios.get('http://localhost:3001/api/receipts');
+            const dataReceipts = responseReceipts.data;
+            setCosmetologyReceipts(dataReceipts.cosmetologyReceipt)
+            setHairdressingReceipts(dataReceipts.hairdressingReceipt)
           } catch (error) {
             console.error('Error fetching data:', error);
           }
         }
         fetchData()
       },[])
+      useEffect(() => {
+        // Automatically select receipts based on selected start and end dates
+        if (selectedStartDate && selectedEndDate) {
+          const startDate = new Date(selectedStartDate);
+          const endDate = new Date(selectedEndDate);
+          const selectedHairdressingReceipts = hairdressingReceipts
+            .filter((receipt) => {
+              const receiptDate = new Date(receipt.date_time);
+              return receiptDate >= startDate && receiptDate <= endDate;
+            })
+            .map((receipt) => receipt.id);
+          setSelectedHairdressingReceipts(selectedHairdressingReceipts);
+    
+          const selectedCosmetologyReceipts = cosmetologyReceipts
+            .filter((receipt) => {
+              const receiptDate = new Date(receipt.date_time);
+              return receiptDate >= startDate && receiptDate <= endDate;
+            })
+            .map((receipt) => receipt.id);
+          setSelectedCosmetologyReceipts(selectedCosmetologyReceipts);
+        }
+      }, [selectedStartDate, selectedEndDate]);
+
   return (
     <div className='container'>
   <h1 style={{color:'#05a9e5'}}>Звіти</h1>
    <Button variant="info" onClick={() => setShowModal(true)}>
         Добавити звіт
       </Button>
-  <h2 style={{color:'#1785b6'}}>Звіти по послугам</h2>
+  <h2 style={{color:'#1785b6'}}>Квитанції по послугам</h2>
   <Table striped bordered hover>
     <thead>
       <tr>
@@ -143,7 +395,7 @@ const Reports = () => {
         <th>Тип</th>
         <th>Послуга</th>
         <th>Дата та час</th>
-        <th>Сумма</th>
+        <th>Вартість</th>
         <th>Кліент</th>
       </tr>
     </thead>
@@ -152,26 +404,26 @@ const Reports = () => {
         <tr key={receipt.id}>
           <td>{receipt.id}</td>
           <td>Косметологія</td>
-          <td>{getCosmetologyServiceName(receipt.cosmetology_id)}</td>
-          <td>{receipt.date_time}</td>
+          <td>{receipt.CosmetologyService.name}</td>
+          <td>{formatDateTime(receipt.date_time)}</td>
           <td>{receipt.total_cost}</td>
-          <td>{receipt.client_id}</td>
+          <td>{receipt.Client.lastname+" "+receipt.Client.firstname}</td>
         </tr>
       ))}
       {hairdressingReceipts.map((receipt) => (
         <tr key={receipt.id}>
           <td>{receipt.id}</td>
           <td>Парикмахерска</td>
-          <td>{getHairdressingServiceName(receipt.hairdressing_id)}</td>
-          <td>{receipt.date_time}</td>
+          <td>{receipt.HairdressingService.name}</td>
+          <td>{formatDateTime(receipt.date_time)}</td>
           <td>{receipt.total_cost}</td>
-          <td>{receipt.client_id}</td>
+          <td>{receipt.Client.lastname+" "+receipt.Client.firstname}</td>
         </tr>
       ))}
     </tbody>
   </Table>
   <h2 style={{color:'#1785b6'}}>Загальні звіти</h2>
-  <Table striped bordered hover>
+  <Table striped bordered hover >
         <thead>
           <tr>
             <th>ID</th>
@@ -187,8 +439,8 @@ const Reports = () => {
             <React.Fragment key={registr.id}>
               <tr>
                 <td>{registr.id}</td>
-                <td>{registr.date_start}</td>
-                <td>{registr.date_end}</td>
+                <td>{formatDate(registr.date_start)}</td>
+                <td>{formatDate(registr.date_end)}</td>
                 <td>{registr.total_cost}</td>
                 <td>
                   <Button
@@ -205,29 +457,32 @@ const Reports = () => {
                     <Table striped bordered>
                       <thead>
                         <tr>
-                          <th>Квитанції парикмахерскої</th>
+                          <th>Тип</th>
+                          <th>Послуга</th>
+                          <th>Дата та час</th>
+                          <th>Вартість</th>
+                          <th>Кліент</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {registr.hairdressingReceipts.map((receipt) => (
+                        {registr.HairdressingReceipts.map((receipt) => (
                           <tr key={receipt.id}>
-                            <td>{getHairdressingServiceName(receipt.hairdressing_id)}</td>
+                            <td>Квитанції парикмахерскої</td>
+                            <td>{receipt.HairdressingService.name}</td>
+                            <td>{formatDateTime(receipt.date_time)}</td>
+                            <td>{receipt.total_cost}</td>
+                            <td>{receipt.Client.lastname+" "+receipt.Client.firstname}</td>
                           </tr>
                         ))}
-                      </tbody>
-                    </Table>
-                    <Table striped bordered>
-                      <thead>
-                        <tr>
-                          <th>Квитанції косметології</th>
+                      {registr.CosmetologyReceipts.map((receipt) => (
+                        <tr key={receipt.id}>
+                          <td>Квитанції косметології</td>
+                          <td>{receipt.CosmetologyService.name}</td>
+                          <td>{formatDateTime(receipt.date_time)}</td>
+                          <td>{receipt.total_cost}</td>
+                          <td>{receipt.Client.lastname+" "+receipt.Client.firstname}</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {registr.cosmetologyReceipts.map((receipt) => (
-                          <tr key={receipt.id}>
-                            <td>{getCosmetologyServiceName(receipt.cosmetology_id)}</td>
-                          </tr>
-                        ))}
+                      ))}
                       </tbody>
                     </Table>
                   </td>
@@ -237,6 +492,7 @@ const Reports = () => {
           ))}
         </tbody>
       </Table>
+      <div style={{marginTop:'70px'}}></div>
   {/* Модальное окно для добавления отчета */}
   <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -244,12 +500,23 @@ const Reports = () => {
         </Modal.Header>
         <Modal.Body>
           <Form>
+          <Form.Group controlId="reportSelectingReceipts">
+            <Form.Check
+              type="checkbox"
+              label="Выбирати квитанції"
+              checked={selectingReceipts}
+              onChange={handleSelectingReceiptsChange}
+            />
+          </Form.Group>
+          {!selectingReceipts ? (
+            <div>
           <Form.Group controlId="reportDateStart">
               <Form.Label>Дата початку</Form.Label>
               <Form.Control
                 type="date"
                 placeholder="Виберіть дату початку"
-                onChange={(e) => setNewReport({ ...newReport, dateStart: e.target.value })}
+                value={selectedStartDate}
+                onChange={handleStartDateChange}
               />
             </Form.Group>
             <Form.Group controlId="reportDateEnd">
@@ -257,74 +524,75 @@ const Reports = () => {
               <Form.Control
                 type="date"
                 placeholder="Виберіть дату кінця"
-                onChange={(e) => setNewReport({ ...newReport, dateEnd: e.target.value })}
+                value={selectedEndDate}
+                onChange={handleEndDateChange}
               />
-            </Form.Group>
-            <Form.Group controlId="reportHairdressingReceipts">
-  <Form.Label>Квитанції парикмахерскої</Form.Label>
-  <Table striped bordered>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Послуга</th>
-        <th>Дата та час</th>
-        <th>Сумма</th>
-        <th>Кліент</th>
-        <th>Вибрати</th>
-      </tr>
-    </thead>
-    <tbody>
-      {hairdressingReceipts.map((receipt) => (
-        <tr key={receipt.id}>
-          <td>{receipt.id}</td>
-          <td>{getHairdressingServiceName(receipt.hairdressing_id)}</td>
-          <td>{receipt.date_time}</td>
-          <td>{receipt.total_cost}</td>
-          <td>{receipt.client_id}</td>
-          <td>
-            <Form.Check
-              type="checkbox"
-              onChange={(e) => handleHairdressingReceiptChange(e, receipt.id)}
-            />
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-</Form.Group>
+            </Form.Group></div>):
+            (<div><Form.Group controlId="reportHairdressingReceipts">
+          <Form.Label>Квитанції парикмахерскої</Form.Label>
+          <Table striped bordered>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Послуга</th>
+                <th>Дата та час</th>
+                <th>Сумма</th>
+                <th>Кліент</th>
+                <th>Вибрати</th>
+              </tr>
+            </thead>
+            <tbody>
+              {hairdressingReceipts.map((receipt) => (
+                <tr key={receipt.id}>
+                  <td>{receipt.id}</td>
+                  <td>{getHairdressingServiceName(receipt.hairdressing_id)}</td>
+                  <td>{formatDateTime(receipt.date_time)}</td>
+                  <td>{receipt.total_cost}</td>
+                  <td>{receipt.client_id}</td>
+                  <td>
+                    <Form.Check
+                      type="checkbox"
+                      onChange={(e) => handleHairdressingReceiptChange(e, receipt.id)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Form.Group>
 
-<Form.Group controlId="reportCosmetologyReceipts">
-  <Form.Label>Квитанції косметології</Form.Label>
-  <Table striped bordered>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Послуга</th>
-        <th>Дата та час</th>
-        <th>Сумма</th>
-        <th>Кліент</th>
-        <th>Вибрати</th>
-      </tr>
-    </thead>
-    <tbody>
-      {cosmetologyReceipts.map((receipt) => (
-        <tr key={receipt.id}>
-          <td>{receipt.id}</td>
-          <td>{getCosmetologyServiceName(receipt.cosmetology_id)}</td>
-          <td>{receipt.date_time}</td>
-          <td>{receipt.total_cost}</td>
-          <td>{receipt.client_id}</td>
-          <td>
-            <Form.Check
-              type="checkbox"
-              onChange={(e) => handleCosmetologyReceiptChange(e, receipt.id)}
-            />
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-</Form.Group>
+        <Form.Group controlId="reportCosmetologyReceipts">
+          <Form.Label>Квитанції косметології</Form.Label>
+          <Table striped bordered>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Послуга</th>
+                <th>Дата та час</th>
+                <th>Сумма</th>
+                <th>Кліент</th>
+                <th>Вибрати</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cosmetologyReceipts.map((receipt) => (
+                <tr key={receipt.id}>
+                  <td>{receipt.id}</td>
+                  <td>{getCosmetologyServiceName(receipt.cosmetology_id)}</td>
+                  <td>{formatDateTime(receipt.date_time)}</td>
+                  <td>{receipt.total_cost}</td>
+                  <td>{receipt.client_id}</td>
+                  <td>
+                    <Form.Check
+                      type="checkbox"
+                      onChange={(e) => handleCosmetologyReceiptChange(e, receipt.id)}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Form.Group></div>)}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -342,4 +610,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default withAuthorization(['ADMIN'])(Reports);

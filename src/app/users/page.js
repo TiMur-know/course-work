@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Collapse, Table, Form } from 'react-bootstrap';
 
+
 const Users = () => {
   const initialUsers = [
     { id: 1, username: 'user1', email: 'user1@example.com', password: 'password1', role: 'USER' },
@@ -11,9 +12,9 @@ const Users = () => {
   ];
 
   const initialWorkers = [
-    { id: 1, userId: 1, firstname: 'John', lastname: 'Doe', phone: '1234567890', age: 30, email: 'john@example.com' },
-    { id: 2, userId: 2, firstname: 'Jane', lastname: 'Doe', phone: '9876543210', age: 25, email: 'jane@example.com' },
-    { id: 3, userId: 3, firstname: 'Bob', lastname: 'Smith', phone: '5555555555', age: 35, email: 'bob@example.com' },
+    { id: 1, userId: 1, firstname: 'John', lastname: 'Doe', phone: '1234567890', age: 30, email: 'john@example.com',UserId:1 },
+    { id: 2, userId: 2, firstname: 'Jane', lastname: 'Doe', phone: '9876543210', age: 25, email: 'jane@example.com',UserId:2 },
+    { id: 3, userId: 3, firstname: 'Bob', lastname: 'Smith', phone: '5555555555', age: 35, email: 'bob@example.com',UserId:3 },
   ];
   
   const [users, setUsers] = useState(initialUsers);
@@ -44,6 +45,7 @@ const Users = () => {
   };
 
   const handleDeleteUser = (userId) => {
+    setIsDataChanged(true)
     setUsers(users.filter((user) => user.id !== userId));
   };
 
@@ -62,10 +64,14 @@ const Users = () => {
 
   const handleSaveChanges = async() => {
     try {
-      // Сохранение изменений пользователей
-      await axios.put('http://localhost:3001/api/users', users);
-      // Сохранение изменений работников
-      await axios.put('http://localhost:3001/api/workers', workers);
+      const data={updatedUsers:users, updatedWorkers:workers};
+      console.log(data)
+      // Отправка данных на сервер
+      await axios.put('http://localhost:3001/api/users', data, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   
       // Сброс флага изменений
       setIsDataChanged(false);
@@ -97,7 +103,6 @@ const Users = () => {
                     <option value="USER">Користувач</option>
                     <option value="HAIRDRESSER">Парикмахер</option>
                     <option value="BEAUTICIAN">Косметолог</option>
-                    <option value="ADMIN">Адміністратор</option>
                   </Form.Select>
                 </td>
                 <td>
@@ -129,7 +134,7 @@ const Users = () => {
                         </thead>
                         <tbody>
                           {workers
-                            .filter((worker) => worker.userId === user.id)
+                            .filter((worker) => worker.UserId === user.id)
                             .map((worker) => (
                               <tr key={worker.id}>
                                 <td>{worker.lastname}</td>

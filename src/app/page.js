@@ -1,15 +1,16 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
-
+import { UserContext } from "../userContext";
 const Home = () => {
-  const user = { id: 1, username: 'user1', email: 'user1@example.com', password: 'password1', role: 'USER' };
+  const {user}=useContext(UserContext);
+  
   const [showModal, setShowModal] = useState(false);
   const [salonInformation, setSalonInformation] = useState({
     name: 'Ларе',
     description: `Наш салон краси "Ларе" - це місце, де ми створюємо красу та надаємо розкішний догляд для наших клієнтів. Завітавши до нас, ви зможете насолодитися професійними послугами від нашої дружньої та талановитої команди експертів у галузі краси.`
-    +`Cras commodo leo volutpat diam interdum congue. Nulla sagittis dolor a semper pellentesque. Vivamus porttitor nibh in risus sodales fringilla. Aenean non lacus lobortis leo sodales rutrum a vitae velit. Etiam molestie leo eu purus accumsan, id porttitor arcu faucibus. Nullam dictum quam ut lorem cursus finibus. Donec finibus auctor ligula, quis placerat odio pretium id. Vestibulum sed erat in sem luctus varius et vel tortor. Mauris a lacus ex.`
-    +``,
+    +`У "Ларе" вас чекає вишуканий асортимент професійних послуг від нашої турботливої та креативної команди експертів. Ми володіємо всіма секретами мистецтва догляду за шкірою, волоссям та нігтями, і готові поділитися цими знаннями з вами.`
+    +`У нашому салоні вас оточить атмосфера затишку та розкішного комфорту, а кожен відвідувач для нас - особлива людина, якій ми присвячуємо найкращі та найефективніші процедури. Дозвольте собі відчути справжню гармонію та відновити свій внутрішній блиск разом з нами.`,
     photo: 'salon.jpg',
     schedule: [
       { day: 'Понеділок', hours: '9:00 AM - 6:00 PM' },
@@ -67,7 +68,7 @@ const Home = () => {
         <div className="col-md-8">
           {/* Salon Information */}
           <h1 style={{color:'#05a2e5'}}>Ласкаво просимо в "{salonInformation.name}"</h1>
-          <img src={salonInformation.photo} alt="Salon" className="rounded float-start  mb-3" width={450} height={350} style={{marginRight:'10px',marginBottom:'10px'}}/>
+          <img src={salonInformation.photo} alt="Salon" className="rounded float-start  mb-3" width={350} height={300} style={{marginRight:'10px',marginBottom:'10px'}}/>
           <div>{salonInformation.description}</div>
         </div>
         <div className="col-md-4">
@@ -106,7 +107,7 @@ const Home = () => {
       </div>
 
       {/* Edit Page Modal */}
-      {user.role=="ADMIN"&&(
+      {user!=null && user.role=="ADMIN"&&(
       <Modal show={showModal} onHide={handleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>Редагування Сторінки</Modal.Title>

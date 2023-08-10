@@ -1,7 +1,9 @@
+import axios from "axios";
+
 const checkUser = async (login) => {
   try {
     // Пример использования fetch:
-    const response = await fetch(`/api/auth/check?username=${login}`);
+    const response = await axios.get(`http://localhost:3001//api/auth/check?username=${username}`)
     const userData = await response.json();
 
     if (userData && userData.length > 0) {
@@ -16,16 +18,10 @@ const checkUser = async (login) => {
 };
 
 const register=async (userData)=>{
-    let { username, email, password, role, firstname, lastname, phone, age } = userData;
     try {
-      const response = await fetch('/api/auth/reg', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-  
+      let { username, email, password, firstname, lastname, phone, age } = userData;
+      const response = await axios.post(`http://localhost:3001//api/auth/register`,userData)
+      const data = response.data;
       if (response.ok) {
         // Регистрация прошла успешно
         return true;

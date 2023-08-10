@@ -15,7 +15,7 @@ const Plate = ({type,service, onEdit, onDelete, isAdmin }) => {
 
   return (
     <Card style={{ width: '18rem' }}>
-      <Card.Img variant="top" src={photo} />
+      <Card.Img width={250} height={200} variant="top" src={photo!=null? (`http://localhost:3001${photo}`):"../non-image.png"} />
       <Card.Body>
         <Card.Title>{name}</Card.Title>
         <Card.Text className=''>Ціна: ${price}</Card.Text>

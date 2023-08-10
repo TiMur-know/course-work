@@ -2,19 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import Plate from './plate';
 import { Modal, Button, Form } from 'react-bootstrap';
+import { useContext } from "react";
+import { UserContext } from "../../userContext";
+import axios from 'axios';
 const Services=()=> {
-  useEffect(()=>{
-    const fetchData = async () => {
-      try {
-        
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  },[])
-  const user = { id: 1, username: 'user1', email: 'user1@example.com', password: 'password1', role: 'ADMIN' };
+  const {user}=useContext(UserContext);
+  
   let isAdmin=user.role==='ADMIN'
   const cosmetologyData = [
     { id: 1, name: 'Facial Treatment', description: 'Lorem ipsum dolor sit amet.', photo: '/images/facial-treatment.jpg',  price: 50 },
@@ -30,6 +23,7 @@ const Services=()=> {
   const [cosmetology, setCosmetology] = useState(cosmetologyData);
   const [hairdressing, setHairdressing] = useState(hairdressingData);
   const [showModal, setShowModal] = useState(false);
+  
   const [newService, setNewService] = useState({
     id: '',
     name: '',
@@ -39,42 +33,47 @@ const Services=()=> {
     gender:'',
     type: 'cosmetology', // Default type to cosmetology
   });
-  const handleAddService = () => {
-    // Обработчик добавления/изменения услуги
-    // Можно отправить новую услугу на сервер или обновить состояние в компоненте
-    // В данном примере, новая услуга просто выводится в консоль
-    const serviceToAdd = { ...newService };
-    const serviceArray = serviceToAdd.type === "cosmetology" ? [...cosmetology] : [...hairdressing];
-
-    if (serviceToAdd.id) {
-      // If the service ID exists, it means we are updating an existing service
-      const index = serviceArray.findIndex((service) => service.id === serviceToAdd.id);
-      if (index !== -1) {
-        // If the service is found in the array, update it
-        serviceArray[index] = serviceToAdd;
-      } else {
-        console.log("Service not found with ID:", serviceToAdd.id);
+  useEffect(()=>{
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/services');
+        const data =await response.json();
+        setCosmetology(data.cosmetologyServices);
+        setHairdressing(data.hairdressingServices)
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-    } else {
-      // If the service ID does not exist, it means we are adding a new service
-      const newId = serviceArray.length + 1;
-      serviceToAdd.id = newId;
-      serviceArray.push(serviceToAdd);
-    }
+    };
 
-    console.log('New service:', serviceToAdd);
-    if (serviceToAdd.type === "cosmetology") {
-      setCosmetology(serviceArray);
-    } else {
-      // Устанавливаем значение "gender" только для услуг типа "hairdressing"
-      const updatedHairdressing = serviceArray.map((service) =>
-        service.type === "hairdressing" ? { ...service, gender: newService.gender } : service
-      );
-      setHairdressing(updatedHairdressing);
+    fetchData();
+  },[])
+  
+  const handleAddService = async() => {
+    try {
+      const formData = new FormData();
+      formData.append('name', newService.name);
+      formData.append('description', newService.description);
+      formData.append('price', newService.price);
+      formData.append('gender', newService.gender);
+      formData.append('type', newService.type);
+      formData.append('photo', newService.photo);
+      console.log(formData)
+      const response = await axios.post('http://localhost:3001/api/services', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      console.log('Response from server:', response.data);
+      // Обновление состояния компонента или выполнение других действий после успешного добавления услуги
+    } catch (error) {
+      console.error('Error adding service:', error);
+      // Обработка ошибки, например, отображение сообщения пользователю
+    } finally {
+      // Сброс формы и закрытие модального окна
+      setNewService({ id: '', name: '', description: '', price: 0, photo: null, gender: '', type: 'cosmetology' });
+      setShowModal(false);
     }
-    // Сброс формы и закрытие модального окна
-    setNewService({ id: "", name: "", description: "", price: 0, photo: null,gender:'',  type: "cosmetology" });
-    setShowModal(false);
   };
 
   const handleEdit = (serviceId,type) => {
@@ -98,15 +97,15 @@ const Services=()=> {
     setShowModal(true);
   };
 
-  const handleDelete = (serviceId,type) => {
-    // Implement delete functionality here or simply console log the serviceId
-    if (type === 'cosmetology') {
-      setCosmetology((prevCosmetology) => prevCosmetology.filter((service) => service.id !== serviceId));
-    } else if (type === 'hairdressing') {
-      setHairdressing((prevHairdressing) => prevHairdressing.filter((service) => service.id !== serviceId));
+  const handleDelete = async(serviceId,type) => {
+    try {
+      const response = await axios.delete(`http://localhost:3001/api/services/${type}/${serviceId}`);
+      console.log('Response from server:', response.data);
+      // Обновление состояния компонента или выполнение других действий после успешного удаления услуги
+    } catch (error) {
+      console.error('Error deleting service:', error);
+      // Обработка ошибки, например, отображение сообщения пользователю
     }
-    console.log(type)
-    console.log(`Delete service with ID:`, serviceId);
   };
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
