@@ -38,6 +38,16 @@ const UserProvider = ({ children }) => {
 
     }
   }
+  const registerUser = async (userData) => {
+    try {
+      const response = await axios.post("/api/auth/register", userData);
+      const { success } = response.data;
+      return success;
+    } catch (error) {
+      console.error("Error registering user:", error);
+      return false;
+    }
+  };
   const logoutUser = () => {
     setUser(null);
   };

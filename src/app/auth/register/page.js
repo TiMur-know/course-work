@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { UserContext } from "./UserProvider"; // Укажите правильный путь к вашему UserProvider.js
 const Register=()=>{
+  const { checkUser, registerUser } = useContext(UserContext);
     const [formData,setFormData]=useState({
       username:"",
       email:"",
@@ -20,16 +22,30 @@ const Register=()=>{
         [id]: value,
       }));
     };
-    const handleSubmit=(e)=>{
+
+    const handleSubmit = async (e) => {
       e.preventDefault();
-    const validationErrors = validForm(formData);
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length === 0) {
-      // Form is valid, proceed with registration logic here
       
-      console.log("Form is valid. Registering user...");
-    }
-    }
+      const userExists = await checkUser(formData.username);
+      
+      if (userExists) {
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          username: "Пользователь с таким именем уже существует"
+        }));
+      } else {
+        const validationErrors = validForm(formData);
+        setErrors(validationErrors);
+        if (Object.keys(validationErrors).length === 0) {
+          const registrationSuccess = await registerUser(formData);
+          if (registrationSuccess) {
+            console.log("User registered successfully.");
+          } else {
+            console.log("Failed to register user.");
+          }
+        }
+      }
+    };
     const validForm=(data)=>{
       let errors={};
       if(!data.username.trim()){
