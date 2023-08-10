@@ -1,6 +1,6 @@
 'use client'
 import React, { createContext, useState } from 'react';
-
+import axios from 'axios'
 
 const UserContext = createContext();
 
@@ -11,7 +11,7 @@ const UserProvider = ({ children }) => {
   const loginUser = async(username,password) => {
     try {
       const userData={username,password}
-      const response = await axios.post('/api/auth/enter', userData);
+      const response = await axios.post('http://localhost:3001/api/auth/enter', userData);
       const { success, user: loggedInUser } = response.data;
 
       if (success) {
@@ -27,7 +27,7 @@ const UserProvider = ({ children }) => {
   };
   const checkUser=async(login)=>{
     try{
-      const response = await axios.get(`/api/auth/check?username=${login}`);
+      const response = await axios.get(`http://localhost:3001/api/auth/check?username=${login}`);
       const userData = response.data;
       if (userData && userData.length > 0) {
         return true; 
@@ -40,7 +40,7 @@ const UserProvider = ({ children }) => {
   }
   const registerUser = async (userData) => {
     try {
-      const response = await axios.post("/api/auth/register", userData);
+      const response = await axios.post("http://localhost:3001/api/auth/register", userData);
       const { success } = response.data;
       return success;
     } catch (error) {
@@ -53,7 +53,7 @@ const UserProvider = ({ children }) => {
   };
   
   return (
-    <UserContext.Provider value={{ user, loginUser, logoutUser,checkUser }}>
+    <UserContext.Provider value={{ user, loginUser, logoutUser,checkUser,registerUser }}>
       {children}
     </UserContext.Provider>
   );

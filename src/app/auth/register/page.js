@@ -1,10 +1,11 @@
 'use client'
-
+import { useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";
 import { UserContext } from "../../../userContext"; // Укажите правильный путь к вашему UserProvider.js
 const Register=()=>{
+  const router = useRouter();
   const { checkUser, registerUser } = useContext(UserContext);
-    const [formData,setFormData]=useState({
+  const [formData,setFormData]=useState({
       username:"",
       email:"",
       password:"",
@@ -25,9 +26,9 @@ const Register=()=>{
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      
+      console.log(formData)
       const userExists = await checkUser(formData.username);
-      
+      console.log(userExists)
       if (userExists) {
         setErrors(prevErrors => ({
           ...prevErrors,
@@ -40,6 +41,7 @@ const Register=()=>{
           const registrationSuccess = await registerUser(formData);
           if (registrationSuccess) {
             console.log("User registered successfully.");
+            router.push('/auth')
           } else {
             console.log("Failed to register user.");
           }
