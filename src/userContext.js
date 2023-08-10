@@ -6,7 +6,7 @@ const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const user1 = { id: 1, username: 'user1', email: 'user1@example.com', password: 'password1', role: 'ADMIN' };
-  const [user, setUser] = useState(user1);
+  const [user, setUser] = useState();
 
   const loginUser = async(username,password) => {
     try {
