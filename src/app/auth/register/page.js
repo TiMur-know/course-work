@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useContext, useState } from "react";
-import { UserContext } from "./UserProvider"; // Укажите правильный путь к вашему UserProvider.js
+import { UserContext } from "../../../userContext"; // Укажите правильный путь к вашему UserProvider.js
 const Register=()=>{
   const { checkUser, registerUser } = useContext(UserContext);
     const [formData,setFormData]=useState({
