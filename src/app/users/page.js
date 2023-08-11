@@ -67,7 +67,7 @@ const Users = () => {
       const data={updatedUsers:users, updatedWorkers:workers};
       console.log(data)
       // Отправка данных на сервер
-      await axios.put('http://localhost:3001/api/users', data, {
+      await axios.post('http://localhost:3001/api/users', data, {
       headers: {
         'Content-Type': 'application/json'
       }
