@@ -85,10 +85,24 @@ const Order = () => {
   };
   const handleSaveOrder = async () =>{
     if (selectedService) {
-      if (isAddClient) {
-        
-      } else if (selectedClient) {
-        
+      try {
+        const orderData = {
+          selectedService,
+          selectedClient,
+          isEditClient,
+          clientData: {
+            lastname: document.getElementById('lastname').value,
+            firstname: document.getElementById('firstname').value,
+            age: document.getElementById('age').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+          },
+        };
+
+        const response = await axios.post('http://localhost:3001/api/receipts', orderData);
+        console.log(response.data.message);
+      } catch (error) {
+        console.error('Error saving order:', error);
       }
     }
   }
