@@ -31,7 +31,7 @@ const Services=()=> {
     price: 0,
     photo: null,
     gender:'',
-    type: 'cosmetology', // Default type to cosmetology
+    type: 'cosmetology',
   });
   useEffect(()=>{
     const fetchData = async () => {
@@ -65,19 +65,17 @@ const Services=()=> {
       });
   
       console.log('Response from server:', response.data);
-      // Обновление состояния компонента или выполнение других действий после успешного добавления услуги
     } catch (error) {
       console.error('Error adding service:', error);
-      // Обработка ошибки, например, отображение сообщения пользователю
     } finally {
-      // Сброс формы и закрытие модального окна
+
       setNewService({ id: '', name: '', description: '', price: 0, photo: null, gender: '', type: 'cosmetology' });
       setShowModal(false);
     }
   };
 
   const handleEdit = (serviceId,type) => {
-    // Implement edit functionality here or simply console log the serviceId
+ 
     let serviceToEdit;
     if(type==='cosmetology'){
       serviceToEdit = cosmetology.find((service) => service.id === serviceId);
