@@ -318,9 +318,6 @@ const Reports = () => {
       
     
       const handleAddReport = async() => {
-        // Обработчик добавления отчета
-        // Можно отправить новый отчет на сервер или обновить состояние в компоненте
-        // В данном примере, новый отчет просто выводится в консоль
         const newReport = {
           dateStart: newReportDateStart,
           dateEnd: newReportDateEnd,
@@ -328,11 +325,9 @@ const Reports = () => {
           cosmetologyReceipts: selectedCosmetologyReceipts,
         };
         try {
-          // Отправить новый отчет на сервер
           const response = await axios.post('http://localhost:3001/api/registr', newReport);
           console.log('New report created:', response.data);
-      
-          // Сброс формы и закрытие модального окна
+
           setNewReportDateStart('');
           setNewReportDateEnd('');
           setSelectedHairdressingReceipts([]);
@@ -359,7 +354,6 @@ const Reports = () => {
         fetchData()
       },[])
       useEffect(() => {
-        // Automatically select receipts based on selected start and end dates
         if (selectedStartDate && selectedEndDate) {
           const startDate = new Date(selectedStartDate);
           const endDate = new Date(selectedEndDate);
