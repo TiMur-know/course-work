@@ -5,50 +5,53 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { useContext } from "react";
 import { UserContext } from "../../userContext";
 import axios from 'axios';
-const Services=()=> {
-  const {user}=useContext(UserContext);
-  
-  let isAdmin=user.role==='ADMIN'
+
+const Services = () => {
+  const { user } = useContext(UserContext);
+  const isAdmin = user.role === 'ADMIN';
+
   const cosmetologyData = [
-    { id: 1, name: 'Facial Treatment', description: 'Lorem ipsum dolor sit amet.', photo: '/images/facial-treatment.jpg',  price: 50 },
-    { id: 2, name: 'Manicure', description: 'Lorem ipsum dolor sit amet.', photo: '/images/manicure.jpg',  price: 25 },
-    { id: 3, name: 'Pedicure', description: 'Lorem ipsum dolor sit amet.', photo: '/images/pedicure.jpg',  price: 30 },
+    { id: 1, name: 'Facial Treatment', description: 'Lorem ipsum dolor sit amet.', photo: '/images/facial-treatment.jpg', price: 50 },
+    { id: 2, name: 'Manicure', description: 'Lorem ipsum dolor sit amet.', photo: '/images/manicure.jpg', price: 25 },
+    { id: 3, name: 'Pedicure', description: 'Lorem ipsum dolor sit amet.', photo: '/images/pedicure.jpg', price: 30 },
   ];
 
   const hairdressingData = [
-    { id: 1, name: 'Haircut', description: 'Lorem ipsum dolor sit amet.', photo: '/images/haircut.jpg', price: 35,  gender: 'Unisex' },
-    { id: 2, name: 'Hair Coloring', description: 'Lorem ipsum dolor sit amet.', photo: '/images/hair-coloring.jpg',  price: 60, gender: 'Unisex' },
-    { id: 3, name: 'Hair Styling', description: 'Lorem ipsum dolor sit amet.', photo: '/images/hair-styling.jpg',  price: 40, gender: 'Unisex' },
+    { id: 1, name: 'Haircut', description: 'Lorem ipsum dolor sit amet.', photo: '/images/haircut.jpg', price: 35, gender: 'Unisex' },
+    { id: 2, name: 'Hair Coloring', description: 'Lorem ipsum dolor sit amet.', photo: '/images/hair-coloring.jpg', price: 60, gender: 'Unisex' },
+    { id: 3, name: 'Hair Styling', description: 'Lorem ipsum dolor sit amet.', photo: '/images/hair-styling.jpg', price: 40, gender: 'Unisex' },
   ];
+
   const [cosmetology, setCosmetology] = useState(cosmetologyData);
   const [hairdressing, setHairdressing] = useState(hairdressingData);
   const [showModal, setShowModal] = useState(false);
-  
+
   const [newService, setNewService] = useState({
     id: '',
     name: '',
     description: '',
     price: 0,
     photo: null,
-    gender:'',
+    gender: '',
     type: 'cosmetology',
   });
-  useEffect(()=>{
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:3001/api/services');
-        const data =await response.json();
+        const data = await response.json();
         setCosmetology(data.cosmetologyServices);
-        setHairdressing(data.hairdressingServices)
+        setHairdressing(data.hairdressingServices);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-  },[])
-  
-  const handleAddService = async() => {
+  }, []);
+
+  const handleAddService = async () => {
     try {
       const formData = new FormData();
       formData.append('name', newService.name);
@@ -57,32 +60,55 @@ const Services=()=> {
       formData.append('gender', newService.gender);
       formData.append('type', newService.type);
       formData.append('photo', newService.photo);
-      console.log(formData)
+
       const response = await axios.post('http://localhost:3001/api/services', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
+
       console.log('Response from server:', response.data);
     } catch (error) {
       console.error('Error adding service:', error);
     } finally {
-
       setNewService({ id: '', name: '', description: '', price: 0, photo: null, gender: '', type: 'cosmetology' });
       setShowModal(false);
     }
   };
 
-  const handleEdit = (serviceId,type) => {
- 
+  const handleEditService = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('name', newService.name);
+      formData.append('description', newService.description);
+      formData.append('price', newService.price);
+      formData.append('gender', newService.gender);
+      formData.append('type', newService.type);
+      formData.append('photo', newService.photo);
+
+      const response = await axios.put(`http://localhost:3001/api/services/edit/${newService.type}/${newService.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Response from server:', response.data);
+    } catch (error) {
+      console.error('Error editing service:', error);
+    } finally {
+      setNewService({ id: '', name: '', description: '', price: 0, photo: null, gender: '', type: 'cosmetology' });
+      setShowModal(false);
+    }
+  };
+
+  const handleEdit = (serviceId, type) => {
     let serviceToEdit;
-    if(type==='cosmetology'){
+    if (type === 'cosmetology') {
       serviceToEdit = cosmetology.find((service) => service.id === serviceId);
-    }else if(type=== 'hairdressing'){
+    } else if (type === 'hairdressing') {
       serviceToEdit = hairdressing.find((service) => service.id === serviceId);
     }
-    console.log(`Edit service with ID: ${serviceId}, Type: ${type}`);
+    
     setNewService({
       id: serviceToEdit.id,
       name: serviceToEdit.name,
@@ -90,12 +116,13 @@ const Services=()=> {
       price: serviceToEdit.price,
       photo: serviceToEdit.photo,
       type,
-      gender: serviceToEdit.type === "hairdressing" ? serviceToEdit.gender : "",
+      gender: serviceToEdit.type === 'hairdressing' ? serviceToEdit.gender : '',
     });
+
     setShowModal(true);
   };
 
-  const handleDelete = async(serviceId,type) => {
+  const handleDelete = async (serviceId, type) => {
     try {
       const response = await axios.delete(`http://localhost:3001/api/services/${type}/${serviceId}`);
       console.log('Response from server:', response.data);
@@ -105,14 +132,15 @@ const Services=()=> {
       // Обработка ошибки, например, отображение сообщения пользователю
     }
   };
+
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     setNewService({ ...newService, photo: file });
   };
 
-    return (
-      <div className='container'>
-      <h1 style={{color:'#05a9e5'}}>Послуги</h1>
+  return (
+    <div className='container'>
+      <h1 style={{ color: '#05a9e5' }}>Послуги</h1>
       {user.role === 'ADMIN' && (
         <div className="mb-3">
           <Button variant="info" onClick={() => setShowModal(true)}>
@@ -120,35 +148,41 @@ const Services=()=> {
           </Button>
         </div>
       )}
-      {user.role!=='HAIRDRESSER'&&(<div>
-        <h2 style={{color:'#1785b6'}}>Косметологічні послуги</h2>
-        <div className="d-flex gap-2">
-          {cosmetology.map(service => (
-            <Plate key={service.id} 
-            type="cosmetology"
-            service={service} 
-            isAdmin={isAdmin} 
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-                />
-          ))}
+      {user.role !== 'HAIRDRESSER' && (
+        <div>
+          <h2 style={{ color: '#1785b6' }}>Косметологічні послуги</h2>
+          <div className="d-flex gap-2">
+            {cosmetology.map(service => (
+              <Plate
+                key={service.id}
+                type="cosmetology"
+                service={service}
+                isAdmin={isAdmin}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
         </div>
-      </div>)}
+      )}
       
-      {user.role!=='BEAUTICIAN'&&(<div >
-        <h2 style={{color:'#1785b6'}}>Перукарські послуги</h2>
-        <div className="d-flex gap-2">
-          {hairdressing.map(service => (
-            <Plate key={service.id} 
-            type="hairdressing"
-            service={service} 
-            isAdmin={isAdmin} 
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-                />
-          ))}
+      {user.role !== 'BEAUTICIAN' && (
+        <div>
+          <h2 style={{ color: '#1785b6' }}>Перукарські послуги</h2>
+          <div className="d-flex gap-2">
+            {hairdressing.map(service => (
+              <Plate
+                key={service.id}
+                type="hairdressing"
+                service={service}
+                isAdmin={isAdmin}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
         </div>
-      </div>)}
+      )}
       {/* Модальное окно для добавления/изменения услуги */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -165,24 +199,26 @@ const Services=()=> {
                 onChange={(e) => setNewService({ ...newService, name: e.target.value })}
               />
             </Form.Group>
-            {newService.id ?<div></div>:<Form.Group controlId="serviceType">
-              <Form.Label>Тип услуги</Form.Label>
-              <Form.Control
-                as="select"
-                value={newService.type}
-                onChange={(e) => setNewService({ ...newService, type: e.target.value })}
-              >
-                <option value="cosmetology">Косметологія</option>
-                <option value="hairdressing">Перукарня</option>
-              </Form.Control>
-            </Form.Group>}
+            {!newService.id && (
+              <Form.Group controlId="serviceType">
+                <Form.Label>Тип послуги</Form.Label>
+                <Form.Control
+                  as="select"
+                  value={newService.type}
+                  onChange={(e) => setNewService({ ...newService, type: e.target.value })}
+                >
+                  <option value="cosmetology">Косметологія</option>
+                  <option value="hairdressing">Перукарські послуги</option>
+                </Form.Control>
+              </Form.Group>
+            )}
             <Form.Group controlId="serviceGender">
-              <Form.Label>Для якоъ статі</Form.Label>
+              <Form.Label>Для якої статі</Form.Label>
               <Form.Control
                 as="select"
                 value={newService.gender}
                 onChange={(e) => setNewService({ ...newService, gender: e.target.value })}
-                disabled={newService.type !== "hairdressing"}
+                disabled={newService.type !== 'hairdressing'}
               >
                 <option value="">Не вказано</option>
                 <option value="Unisex">Унісекс</option>
@@ -204,7 +240,7 @@ const Services=()=> {
               <Form.Label>Вартість послуги</Form.Label>
               <Form.Control
                 type="number"
-                placeholder="Введить вартість послуги"
+                placeholder="Введіть вартість послуги"
                 value={newService.price}
                 onChange={(e) => setNewService({ ...newService, price: e.target.value })}
               />
@@ -213,21 +249,25 @@ const Services=()=> {
               <Form.Label>Фото послуги</Form.Label>
               <Form.Control type="file" accept="image/*" onChange={handleFileUpload} />
             </Form.Group>
-            
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          
-          <Button variant="info" onClick={handleAddService}>
-            {newService.id ? 'Змінити' : 'Добавити'}
-          </Button>
+          {newService.id == '' ? (
+            <Button variant="info" onClick={handleAddService}>
+              Добавити
+            </Button>
+          ) : (
+            <Button variant="info" onClick={handleEditService}>
+              Змінити
+            </Button>
+          )}
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Відміна
           </Button>
         </Modal.Footer>
       </Modal>
     </div>
-      
-    )
-  }
-export default Services
+  );
+}
+
+export default Services;
