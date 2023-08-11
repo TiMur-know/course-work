@@ -284,12 +284,12 @@ const Reports = () => {
         setSelectedCosmetologyReceipts([]);
       };
       const getCosmetologyServiceName = (cosmetologyId) => {
-        const service = cosmetologyServices.find((service) => service.id === cosmetologyId);
+        const service = cosmetologyServices.find((service) => service.id == cosmetologyId);
         return service ? service.name : '';
       };
     
       const getHairdressingServiceName = (hairdressingId) => {
-        const service = hairdressingServices.find((service) => service.id === hairdressingId);
+        const service = hairdressingServices.find((service) => service.id == hairdressingId);
         return service ? service.name : '';
       };
       const handleStartDateChange = (event) => {
@@ -317,19 +317,19 @@ const Reports = () => {
       };
       
     
-      const handleAddReport = async() => {
+      const handleAddReport = async () => {
         const newReport = {
-          dateStart: newReportDateStart,
-          dateEnd: newReportDateEnd,
+          dateStart: selectedStartDate,
+          dateEnd: selectedEndDate,
           hairdressingReceipts: selectedHairdressingReceipts,
           cosmetologyReceipts: selectedCosmetologyReceipts,
         };
         try {
-          const response = await axios.post('http://localhost:3001/api/registr', newReport);
+          const response = await axios.post('http://localhost:3001/api/registrs', newReport);
           console.log('New report created:', response.data);
-
-          setNewReportDateStart('');
-          setNewReportDateEnd('');
+    
+          setSelectedStartDate('');
+          setSelectedEndDate('');
           setSelectedHairdressingReceipts([]);
           setSelectedCosmetologyReceipts([]);
           setShowModal(false);
