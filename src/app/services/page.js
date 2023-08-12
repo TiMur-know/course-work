@@ -25,7 +25,7 @@ const Services = () => {
   const [cosmetology, setCosmetology] = useState(cosmetologyData);
   const [hairdressing, setHairdressing] = useState(hairdressingData);
   const [showModal, setShowModal] = useState(false);
-
+  const [isServerData, setIsDataServer] = useState(false)
   const [newService, setNewService] = useState({
     id: '',
     name: '',
@@ -43,12 +43,14 @@ const Services = () => {
         const data = await response.json();
         setCosmetology(data.cosmetologyServices);
         setHairdressing(data.hairdressingServices);
+        setIsDataServer(true)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
+    
   }, []);
 
   const handleAddService = async () => {
@@ -108,7 +110,7 @@ const Services = () => {
     } else if (type === 'hairdressing') {
       serviceToEdit = hairdressing.find((service) => service.id === serviceId);
     }
-    
+
     setNewService({
       id: serviceToEdit.id,
       name: serviceToEdit.name,
@@ -140,132 +142,134 @@ const Services = () => {
 
   return (
     <div className='container'>
-      <h1 style={{ color: '#05a9e5' }}>Послуги</h1>
-      {user.role === 'ADMIN' && (
-        <div className="mb-3">
-          <Button variant="info" onClick={() => setShowModal(true)}>
-            Добавити послугу
-          </Button>
-        </div>
-      )}
-      {user.role !== 'HAIRDRESSER' && (
-        <div>
-          <h2 style={{ color: '#1785b6' }}>Косметологічні послуги</h2>
-          <div className="d-flex gap-2">
-            {cosmetology.map(service => (
-              <Plate
-                key={service.id}
-                type="cosmetology"
-                service={service}
-                isAdmin={isAdmin}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
+      {isServerData ? (<div>
+        <h1 style={{ color: '#05a9e5' }}>Послуги</h1>
+        {user.role === 'ADMIN' && (
+          <div className="mb-3">
+            <Button variant="info" onClick={() => setShowModal(true)}>
+              Добавити послугу
+            </Button>
           </div>
-        </div>
-      )}
-      
-      {user.role !== 'BEAUTICIAN' && (
-        <div>
-          <h2 style={{ color: '#1785b6' }}>Перукарські послуги</h2>
-          <div className="d-flex gap-2">
-            {hairdressing.map(service => (
-              <Plate
-                key={service.id}
-                type="hairdressing"
-                service={service}
-                isAdmin={isAdmin}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-            ))}
+        )}
+        {user.role !== 'HAIRDRESSER' && (
+          <div>
+            <h2 style={{ color: '#1785b6' }}>Косметологічні послуги</h2>
+            <div className="d-flex gap-2">
+              {cosmetology.map(service => (
+                <Plate
+                  key={service.id}
+                  type="cosmetology"
+                  service={service}
+                  isAdmin={isAdmin}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
-      {/* Модальное окно для добавления/изменения услуги */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{newService.id ? 'Змінити послуги' : 'Добавити послуги'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="serviceName">
-              <Form.Label>Назва послуги</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Введіть назву послуги"
-                value={newService.name}
-                onChange={(e) => setNewService({ ...newService, name: e.target.value })}
-              />
-            </Form.Group>
-            {!newService.id && (
-              <Form.Group controlId="serviceType">
-                <Form.Label>Тип послуги</Form.Label>
+        )}
+
+        {user.role !== 'BEAUTICIAN' && (
+          <div>
+            <h2 style={{ color: '#1785b6' }}>Перукарські послуги</h2>
+            <div className="d-flex gap-2">
+              {hairdressing.map(service => (
+                <Plate
+                  key={service.id}
+                  type="hairdressing"
+                  service={service}
+                  isAdmin={isAdmin}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+        {/* Модальное окно для добавления/изменения услуги */}
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>{newService.id ? 'Змінити послуги' : 'Добавити послуги'}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="serviceName">
+                <Form.Label>Назва послуги</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Введіть назву послуги"
+                  value={newService.name}
+                  onChange={(e) => setNewService({ ...newService, name: e.target.value })}
+                />
+              </Form.Group>
+              {!newService.id && (
+                <Form.Group controlId="serviceType">
+                  <Form.Label>Тип послуги</Form.Label>
+                  <Form.Control
+                    as="select"
+                    value={newService.type}
+                    onChange={(e) => setNewService({ ...newService, type: e.target.value })}
+                  >
+                    <option value="cosmetology">Косметологія</option>
+                    <option value="hairdressing">Перукарські послуги</option>
+                  </Form.Control>
+                </Form.Group>
+              )}
+              <Form.Group controlId="serviceGender">
+                <Form.Label>Для якої статі</Form.Label>
                 <Form.Control
                   as="select"
-                  value={newService.type}
-                  onChange={(e) => setNewService({ ...newService, type: e.target.value })}
+                  value={newService.gender}
+                  onChange={(e) => setNewService({ ...newService, gender: e.target.value })}
+                  disabled={newService.type !== 'hairdressing'}
                 >
-                  <option value="cosmetology">Косметологія</option>
-                  <option value="hairdressing">Перукарські послуги</option>
+                  <option value="">Не вказано</option>
+                  <option value="Unisex">Унісекс</option>
+                  <option value="Male">Чоловіки</option>
+                  <option value="Female">Жінки</option>
                 </Form.Control>
               </Form.Group>
+              <Form.Group controlId="serviceDescription">
+                <Form.Label>Опис послуги</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Введіть опис послуги"
+                  value={newService.description}
+                  onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group controlId="servicePrice">
+                <Form.Label>Вартість послуги</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Введіть вартість послуги"
+                  value={newService.price}
+                  onChange={(e) => setNewService({ ...newService, price: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group controlId="servicePhoto">
+                <Form.Label>Фото послуги</Form.Label>
+                <Form.Control type="file" accept="image/*" onChange={handleFileUpload} />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            {newService.id == '' ? (
+              <Button variant="info" onClick={handleAddService}>
+                Добавити
+              </Button>
+            ) : (
+              <Button variant="info" onClick={handleEditService}>
+                Змінити
+              </Button>
             )}
-            <Form.Group controlId="serviceGender">
-              <Form.Label>Для якої статі</Form.Label>
-              <Form.Control
-                as="select"
-                value={newService.gender}
-                onChange={(e) => setNewService({ ...newService, gender: e.target.value })}
-                disabled={newService.type !== 'hairdressing'}
-              >
-                <option value="">Не вказано</option>
-                <option value="Unisex">Унісекс</option>
-                <option value="Male">Чоловіки</option>
-                <option value="Female">Жінки</option>
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="serviceDescription">
-              <Form.Label>Опис послуги</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                placeholder="Введіть опис послуги"
-                value={newService.description}
-                onChange={(e) => setNewService({ ...newService, description: e.target.value })}
-              />
-            </Form.Group>
-            <Form.Group controlId="servicePrice">
-              <Form.Label>Вартість послуги</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Введіть вартість послуги"
-                value={newService.price}
-                onChange={(e) => setNewService({ ...newService, price: e.target.value })}
-              />
-            </Form.Group>
-            <Form.Group controlId="servicePhoto">
-              <Form.Label>Фото послуги</Form.Label>
-              <Form.Control type="file" accept="image/*" onChange={handleFileUpload} />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          {newService.id == '' ? (
-            <Button variant="info" onClick={handleAddService}>
-              Добавити
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Відміна
             </Button>
-          ) : (
-            <Button variant="info" onClick={handleEditService}>
-              Змінити
-            </Button>
-          )}
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Відміна
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          </Modal.Footer>
+        </Modal>
+      </div>) : (<ServerError />)}
     </div>
   );
 }

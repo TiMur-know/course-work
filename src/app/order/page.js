@@ -108,6 +108,7 @@ const Order = () => {
   }
   return (
     <div className="container">
+      {isServerData ? (<div>
       <div className="row">
         <div className="col-6">
           <h2 style={{color:'#05a9e5'}}>Послуги</h2>
@@ -251,6 +252,7 @@ const Order = () => {
       </button>
         
       </div>
+      </div>) : (<ServerError />)}
     </div>
   );
 };

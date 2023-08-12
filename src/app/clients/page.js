@@ -25,6 +25,7 @@ const Clients=()=> {
   
     return (
       <div className="container">
+        {isServerData ? (<div>
       <h2 className="my-4" style={{color:'#05a9e5'}}>Клієнти</h2>
       <table className="table table-striped">
         <thead>
@@ -48,6 +49,7 @@ const Clients=()=> {
           ))}
         </tbody>
       </table>
+      </div>) : (<ServerError />)}
     </div>
     )
   }
