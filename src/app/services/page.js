@@ -5,11 +5,14 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { useContext } from "react";
 import { UserContext } from "../../userContext";
 import axios from 'axios';
-
+import ServerError from '../../server_error'
 const Services = () => {
   const { user } = useContext(UserContext);
+  let isAuth=false;
+  if(user!=null){
+    let isAuth=true;
   const isAdmin = user.role === 'ADMIN';
-
+  }
   const cosmetologyData = [
     { id: 1, name: 'Facial Treatment', description: 'Lorem ipsum dolor sit amet.', photo: '/images/facial-treatment.jpg', price: 50 },
     { id: 2, name: 'Manicure', description: 'Lorem ipsum dolor sit amet.', photo: '/images/manicure.jpg', price: 25 },
@@ -144,14 +147,44 @@ const Services = () => {
     <div className='container'>
       {isServerData ? (<div>
         <h1 style={{ color: '#05a9e5' }}>Послуги</h1>
-        {user.role === 'ADMIN' && (
+        {isAuth==false&&(<>
+          <div>
+            <h2 style={{ color: '#1785b6' }}>Косметологічні послуги</h2>
+            <div className="d-flex gap-2">
+              {cosmetology.map(service => (
+                <Plate
+                  key={service.id}
+                  type="cosmetology"
+                  service={service}
+                />
+              ))}
+
+            </div>
+          </div>
+          <div>
+            <h2 style={{ color: '#1785b6' }}>Перукарські послуги</h2>
+            <div className="d-flex gap-2">
+              {hairdressing.map(service => (
+                <Plate
+                  key={service.id}
+                  type="hairdressing"
+                  service={service}
+                />
+              ))}
+            </div>
+          </div>
+        </>)
+
+        }
+        {isAuth==true&&(<>
+          {user.role === 'ADMIN' && (
           <div className="mb-3">
             <Button variant="info" onClick={() => setShowModal(true)}>
               Добавити послугу
             </Button>
           </div>
         )}
-        {user.role !== 'HAIRDRESSER' && (
+        {user.role !== 'HAIRDRESSER'  && (
           <div>
             <h2 style={{ color: '#1785b6' }}>Косметологічні послуги</h2>
             <div className="d-flex gap-2">
@@ -167,6 +200,7 @@ const Services = () => {
               ))}
             </div>
           </div>
+          
         )}
 
         {user.role !== 'BEAUTICIAN' && (
@@ -186,6 +220,7 @@ const Services = () => {
             </div>
           </div>
         )}
+        
         {/* Модальное окно для добавления/изменения услуги */}
         <Modal show={showModal} onHide={() => setShowModal(false)}>
           <Modal.Header closeButton>
@@ -269,6 +304,11 @@ const Services = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+        </>
+        )
+
+        }
+        
       </div>) : (<ServerError />)}
     </div>
   );

@@ -5,8 +5,9 @@ import axios from 'axios'
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const [user, setUser] = useState();
-
+  const user1={login:'user1',password:1234,role:'ADMIN'}
+  const [user, setUser] = useState(user1);
+  
   const loginUser = async(username,password) => {
     try {
       const userData={username,password}

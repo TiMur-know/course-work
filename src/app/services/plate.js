@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 
-const Plate = ({type,service, onEdit, onDelete, isAdmin }) => {
+const Plate = ({type,service, onEdit, onDelete, isAdmin=false }) => {
   const { id, name, description, photo, price, gender } = service;
 
   const handleEdit = () => {

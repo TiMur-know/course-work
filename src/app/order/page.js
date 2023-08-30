@@ -4,13 +4,14 @@ import withAuthorization  from '../../authControl'
 import { useContext } from "react";
 import { UserContext } from "../../userContext";
 import axios from 'axios';
+import ServerError from '../../server_error'
 const Order = () => {
   const {user}=useContext(UserContext);
   const [selectedService, setSelectedService] = useState(null);
   const [selectedClient, setSelectedClient] = useState(null);
   const [isEditClient, setEditClient] = useState(null);
   const [isAddClient,setAddClient]=useState(false)
-
+  const [isServerData, setIsDataServer] = useState(false)
   const initialServices = [
     { id: 1, name: 'Услуга 1',type:"h", description: 'Описание услуги 1' },
     { id: 2, name: 'Услуга 2',type:"h", description: 'Описание услуги 2' },
@@ -60,6 +61,7 @@ const Order = () => {
         }
         
         setServices(servicesData)
+        setIsDataServer(true)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
