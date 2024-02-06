@@ -1,0 +1,38 @@
+.nav-item .nav-link {
+    color: darkorange;
+    text-decoration: none;
+  }
+  
+  .nav-item .nav-link:hover {
+    color: white;
+    background-color: darkorange;
+    border-radius: 5px;
+  }
+  .nav-item .nav-link:active {
+    color: white;
+    background-color: darkorange;
+    border-radius: 5px;
+  }
+  .login-link .nav-link {
+    color: darkorange;
+    background-color: transparent;
+    border: none;
+  }
+  
+  .login-link .nav-link:hover {
+    color: white;
+  }
+  
+  /* Styling for the buttons */
+  .btn {
+    color: white;
+    background-color: darkorange;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .btn:hover {
+    background-color: #ff8c00; /* Slightly lighter shade on hover */
+  }
